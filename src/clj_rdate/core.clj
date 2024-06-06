@@ -1,6 +1,6 @@
 (ns clj-rdate.core
   "The core namespace for relative date operations in the clj-rdate library."
-  (:require [clj-time.core :as t]
+  (:require [java-time.api :as jt]
             [clj-rdate.internal.fn :as intfn]
             [instaparse.core :as insta]
             [instaparse.combinators :as c]
@@ -33,19 +33,16 @@
 ; in. We support the three standard date types available within clj-time
 (defmulti date-constructor "Date construction wrapper for clj-time"
   (fn [current_dt year month day] (class current_dt)))
-(defmethod date-constructor org.joda.time.DateTime [current_dt year month day]
-  (t/date-time year month day))
-(defmethod date-constructor org.joda.time.LocalDate [current_dt year month day]
-  (t/local-date year month day))
-(defmethod date-constructor org.joda.time.LocalDateTime [current_dt year month day]
-  (t/local-date-time year month day))
+(defmethod date-constructor java.time.LocalDate [_ year month day]
+  (jt/local-date year month day))
+(defmethod date-constructor java.time.LocalDateTime [_ year month day]
+  (jt/local-date-time year month day))
 
 ; Simple type function for allowing generalised methods that take rdates or dates
 (defmulti rdate-arg-type "Retrieve the type for dispatch" class)
 (defmethod rdate-arg-type clojure.lang.PersistentArrayMap [rd] (:type rd))
-(defmethod rdate-arg-type org.joda.time.DateTime [_] ::date-obj)
-(defmethod rdate-arg-type org.joda.time.LocalDate [_] ::date-obj)
-(defmethod rdate-arg-type org.joda.time.LocalDateTime [_] ::date-obj)
+(defmethod rdate-arg-type java.time.LocalDate [_] ::date-obj)
+(defmethod rdate-arg-type java.time.LocalDateTime [_] ::date-obj)
 (defmethod rdate-arg-type java.lang.String [_] ::string-obj)
 
 ; The public APIs for supporting rdate manipulation
@@ -153,7 +150,7 @@
 (defn rdate-range
   ([from_dt to_dt period] (rdate-range from_dt to_dt period true true))
   ([from_dt to_dt period inc_from inc_to]
-    (letfn [(dt-compare [next] (if inc_to (not (t/after? next to_dt)) (t/before? next to_dt)))]
+    (letfn [(dt-compare [next] (if inc_to (not (jt/after? next to_dt)) (jt/before? next to_dt)))]
       (take-while dt-compare (rdate-inf-range from_dt period inc_from)))))
 
 (require 'clj-rdate.internal.rdate-add-impl

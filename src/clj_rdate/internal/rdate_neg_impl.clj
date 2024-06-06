@@ -1,8 +1,8 @@
 (ns clj-rdate.internal.rdate-neg-impl
-  "Implementation details for rd/rdate-neg and associated methods"
-  (:require [clj-time.core :as t]))
+  "Implementation details for rd/rdate-neg and associated methods")
 
 (refer 'clj-rdate.core)
+
 
 (defmethod rdate-neg :clj-rdate.core/days [rd] (update-in rd [:period] * -1))
 (defmethod rdate-neg :clj-rdate.core/weeks [rd] (update-in rd [:period] * -1))

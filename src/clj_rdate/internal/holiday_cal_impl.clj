@@ -1,5 +1,5 @@
 (ns clj-rdate.internal.holiday-cal-impl
-  (:require [clj-time.core :as t]
+  (:require [java-time.api :as jt]
             [clojure.string :as s]
             [clj-rdate.internal.fn :as intfn]))
 
@@ -35,17 +35,17 @@
   (reduce #(or %1 (is-holiday? %2 dt)) false (:cals cal)))
 
 (defmethod is-holiday? :clj-rdate.core/weekends [cal dt]
-  (contains? (:weekend-days cal) (t/day-of-week dt)))
+  (contains? (:weekend-days cal) (jt/as dt :day-of-week)))
 
   (defn- holidays-in-period [cal from-year years]
-    (let [from-dt (t/local-date from-year 1 1)
-          to-dt (t/local-date (+ from-year (dec years)) 12 31)]
+    (let [from-dt (jt/local-date from-year 1 1)
+          to-dt (jt/local-date (+ from-year (dec years)) 12 31)]
       (holidays cal from-dt to-dt)))
   (def ^{:private true} cached-holidays-in-period (memoize holidays-in-period))
 
 (defmethod is-holiday? :clj-rdate.core/rule-based [cal dt]
   (let [period 100
-        val (quot (t/year dt) period)
+        val (quot (jt/as dt :year) period)
         hols (cached-holidays-in-period cal (* period val) period)]
     (contains? hols dt)))
 
@@ -55,12 +55,12 @@
     (map #(vector (rdate-add (:rule rule) %1) (:name rule))
       (rdate-range from-dt to-dt (:period rule)))))
 (defmethod rule-holidays ::rule-specific-date [rule from-dt to-dt]
-  (let [dt (t/local-date (:year rule) (:month rule) (:day rule))]
-    (if (and (not (t/after? from-dt dt)) (not (t/before? to-dt dt))) {dt (:name rule)} {})))
+  (let [dt (jt/local-date (:year rule) (:month rule) (:day rule))]
+    (if (and (not (jt/after? from-dt dt)) (not (jt/before? to-dt dt))) {dt (:name rule)} {})))
 
 (defmethod rule-holidays ::rule-specific-date-removal [rule from-dt to-dt]
-  (let [dt (t/local-date (:year rule) (:month rule) (:day rule))]
-    (if (and (not (t/after? from-dt dt)) (not (t/before? to-dt dt))) {dt nil} {})))
+  (let [dt (jt/local-date (:year rule) (:month rule) (:day rule))]
+    (if (and (not (jt/after? from-dt dt)) (not (jt/before? to-dt dt))) {dt nil} {})))
 
 (defmethod holidays :clj-rdate.core/rule-based [cal from-dt to-dt]
   (into {} (filter #(not (nil? (second %))) (into (sorted-map) (map #(rule-holidays %1 from-dt to-dt) (:rules cal))))))

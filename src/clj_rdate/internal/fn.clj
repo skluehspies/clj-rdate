@@ -1,9 +1,9 @@
 (ns clj-rdate.internal.fn
   "Internal functions for use only within the clj-rdate library"
-  (:require [clj-time.core :as t]))
+  (:require [java-time.api :as jt]))
 
 (defn easter-sunday [date-constructor dt year-increment]
-  (let [year (+ (t/year dt) year-increment)
+  (let [year (+ (jt/as dt :year) year-increment)
         a (rem  year 19)
         b (quot year 100)
         c (rem  year 100)
@@ -23,5 +23,5 @@
       (date-constructor dt year n (inc p)))))
 
 (defmulti to-local-date class)
-(defmethod to-local-date org.joda.time.LocalDate [dt] dt)
-(defmethod to-local-date :default [dt] (t/local-date (t/year dt) (t/month dt) (t/day dt)))
+(defmethod to-local-date java.time.LocalDate [dt] dt)
+(defmethod to-local-date :default [dt] (jt/local-date (jt/as dt :year) (jt/as dt :month-of-year) (jt/as dt :day-of-month)))
