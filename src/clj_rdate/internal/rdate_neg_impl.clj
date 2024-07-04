@@ -17,4 +17,5 @@
 (defmethod rdate-is-neg? :clj-rdate.core/years [rd] (< (:period rd) 0))
 (defmethod rdate-is-neg? :clj-rdate.core/weekdays [rd] (< (:period rd) 0))
 (defmethod rdate-is-neg? :clj-rdate.core/easter-sunday [rd] (< (:period rd) 0))
+(defmethod rdate-is-neg? :clj-rdate.core/compound [rd] (not-any? #(< % 0) (map :period (:parts (:rdate rd)))))
 (defmethod rdate-is-neg? :clj-rdate.core/rdate [rd] false)

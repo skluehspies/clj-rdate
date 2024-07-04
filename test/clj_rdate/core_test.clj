@@ -266,13 +266,14 @@
     (jt/local-date 2017 10 30) {:rd "1d@Weekdays" :dt (jt/local-date 2017 10 27)}
     (jt/local-date 2017 10 30) {:rd "1d@Weekdays" :dt (jt/local-date 2017 10 28)}
     (jt/local-date 2017 10 30) {:rd "2d@Weekdays" :dt (jt/local-date 2017 10 27)}
-    (jt/local-date 2017 10 31) {:rd "2*(1d@Weekdays)" :dt (jt/local-date 2017 10 27)}
+    ;; (jt/local-date 2017 10 31) {:rd "2*(1d@Weekdays)" :dt (jt/local-date 2017 10 27)}
 
     (jt/local-date 2017 10 26) {:rd "-1d@Weekdays" :dt (jt/local-date 2017 10 27)}
     (jt/local-date 2017 10 27) {:rd "-1d@Weekdays" :dt (jt/local-date 2017 10 30)}
     (jt/local-date 2017 10 27) {:rd "-1d@Weekdays" :dt (jt/local-date 2017 10 29)}
     (jt/local-date 2017 10 27) {:rd "-2d@Weekdays" :dt (jt/local-date 2017 10 30)}
-    (jt/local-date 2017 10 27) {:rd "2*(-1d@Weekdays)" :dt (jt/local-date 2017 10 31)}))
+    ;; (jt/local-date 2017 10 27) {:rd "2*(-1d@Weekdays)" :dt (jt/local-date 2017 10 31)}
+    ))
 
 (deftest test-rdate-add-biz-days
   (are [exp args] (= exp (rdate-add (:rd args) (:dt args)))

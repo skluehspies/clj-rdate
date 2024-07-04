@@ -57,8 +57,10 @@
 (defn is-not-holiday? [cal dt] (not (is-holiday? cal dt)))
 (defmulti holidays (fn [cal from-dt to-dt] (:type cal)))
 
-(def rdate-parser "The grammar definition for an rdate" (insta/parser
-  "rdate-expr = add-sub
+(def rdate-parser "The grammar definition for an rdate"
+  (insta/parser
+   "rdate-expr = add-sub | calendar
+   calendar = add-sub <'@'> cal
    <add-sub> = mult | add | sub
    add = add-sub <'+'> mult
    sub = add-sub <'-'> mult
@@ -66,11 +68,9 @@
    left-mult = pos-int <'*'> mult
    right-mult = mult <'*'> pos-int
    <rdate> = rdate-term | <'('> add-sub <')'>
-   rdate-term = biz-days | biz-days-with-cal | days | weeks | months | years | easter-sunday | weekdays | nth-weekdays | nth-last-weekdays | first-day-of-month | last-day-of-month | day-month | calendar
-   <cal-rdate-term> = days | weeks | months | years
-   calendar = cal-rdate-term <'@'> cal
-   biz-days = int <'b'>
+   rdate-term = biz-days | biz-days-with-cal | days | weeks | months | years | easter-sunday | weekdays | nth-weekdays | nth-last-weekdays | first-day-of-month | last-day-of-month | day-month
    biz-days-with-cal = int <'b'> <'@'> cal
+   biz-days = int <'b'>
    days = int <'d'>
    weeks = int <'w'>
    months = int <'m'>
