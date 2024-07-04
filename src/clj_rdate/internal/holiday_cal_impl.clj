@@ -31,6 +31,41 @@
       {:type ::rule-specific-date-removal :name "2012 May Bank Holiday Moved" :day 28 :month 05 :year 2012}
       ]}]})
 
+(defmethod get-calendar "GER" [_]
+  {:type :clj-rdate.core/multi :cals
+   [
+    (get-calendar "Weekdays")
+    {:type :clj-rdate.core/rule-based :rules
+     [
+                                        ; Examples of the periodic form for standard holidays
+      {:type ::rule-periodic :name "Neujahr" :period "1y" :rule "1JAN+0b"}
+      {:type ::rule-periodic :name "Karfreitag" :period "1y" :rule "0E-2d"}
+      {:type ::rule-periodic :name "Ostermontag" :period "1y" :rule "0E+1d"}
+      {:type ::rule-periodic :name "Tag der Arbeit" :period "1y" :rule "1MAY+0b"}
+      {:type ::rule-periodic :name "Heiligabend" :period "1y" :rule "24DEC+0b"}
+      {:type ::rule-periodic :name "1. Weihnachtsfeiertag" :period "1y" :rule "25DEC+0b"}
+      {:type ::rule-periodic :name "2. Weihnachtsfeiertag" :period "1y" :rule "26DEC+0b"}
+      {:type ::rule-periodic :name "Silvester" :period "1y" :rule "31DEC+0b"}
+      ;;                                   ; Examples of specific date holidays which may be added (or removed)
+      ;; {:type ::rule-specific-date :name "Queen's Diamond Jubilee" :day 05 :month 06 :year 2012}
+      ;; {:type ::rule-specific-date :name "2012 May Bank Holiday" :day 04 :month 06 :year 2012}
+      ;; {:type ::rule-specific-date-removal :name "2012 May Bank Holiday Moved" :day 28 :month 05 :year 2012}
+      ]}]})
+
+;; (defmethod get-calendar "GER" [_]
+;;   {:type :clj-rdate.core/multi :cals
+;;    [(get-calendar "Weekdays")
+;;     {:type :clj-rdate.core/rule-based :rules
+;;      [           ; Examples of the periodic form for standard holidays
+;;       {:type ::rule-periodic :name "Neujahr" :period "1y" :rule "1JAN+0b"}
+;;       {:type ::rule-periodic :name "Karfreitag" :period "1y" :rule "0E-2d"}
+;;       {:type ::rule-periodic :name "Ostermontag" :period "1y" :rule "0E+1d"}
+;;       {:type ::rule-periodic :name "Tag der Arbeit" :period "1y" :rule "1MAY0M"}
+;;       {:type ::rule-periodic :name "Heilig Abend" :period "1y" :rule "24DEC+0b"}
+;;       {:type ::rule-periodic :name "1. Weihnachtsfeiertag" :period "1y" :rule "25DEC+0b"}
+;;       {:type ::rule-periodic :name "2. Weihnachtsfeiertag" :period "1y" :rule "26DEC+0b"}
+;;       ]}]})
+
 (defmethod is-holiday? :clj-rdate.core/multi [cal dt]
   (reduce #(or %1 (is-holiday? %2 dt)) false (:cals cal)))
 
